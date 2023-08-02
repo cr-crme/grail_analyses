@@ -45,9 +45,9 @@ def optimize_cell_width(ws):
                     max_length = len(cell.value)
             except:
                 pass
-        adjusted_width = max_length + 5
+        adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[get_column_letter(
-            col[0].column)].width = adjusted_width
+        col[0].column)].width = adjusted_width
 
 
 def bold(ws, cell, version='v1'):
