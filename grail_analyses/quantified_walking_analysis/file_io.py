@@ -32,4 +32,4 @@ def process_files(files: list[str, ...]):
         data = load_data(file)
 
         generate_pdf(data, f"{save_folder}/{save_file_no_extension}.pdf")
-        generate_excel(data, f"{save_folder}/{save_file_no_extension}.xslx")
+        generate_excel(data, f"{save_folder}/{save_file_no_extension}.xlsx")

@@ -4,91 +4,52 @@ from openpyxl.styles import Font, Alignment, Border, Side
 from .config import movement_names
 
 
+def _populate_table(sheet, data, name: str, level: str, plane: str, initial_row: int, initial_col: str) -> int:
+    def col(_i):
+        return chr(ord(initial_col) + _i)
+
+    if level not in ("kinematics", "moment", "power"):
+        raise ValueError("Wrong level")
+    if plane not in ("sagittal", "frontal", "transversal"):
+        raise ValueError("Wrong plane")
+
+    names = movement_names[level][plane]
+
+    sheet[f"{col(0)}{initial_row}"] = name
+    sheet[f"B{initial_row}"].font = Font(bold=True)
+    for i, value in enumerate(names):
+        sheet[f"{col(0)}{i + initial_row + 1}"] = value["fr"]
+        sheet[f"{col(1)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Minimum Appui"], 2)
+        sheet[f"{col(2)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Maximum Appui"], 2)
+        sheet[f"{col(3)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Range Appui"], 2)
+        sheet[f"{col(4)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Minimum Oscillation"], 2)
+        sheet[f"{col(5)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Maximum Oscillation"], 2)
+        sheet[f"{col(6)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Range Oscillation"], 2)
+    return initial_row + len(movement_names[level][plane])
+
+
 def generate_excel(data: dict, save_file: str):
-    # EXCEL
     workbook = Workbook()
     sheet = workbook.active
-    # Titre de cellules
-    sheet["B2"] = "Patient ID"
-    sheet["B3"] = "Session ID"
-    sheet["B4"] = "Date"
-    sheet["C5"] = "Cinématique"
-    sheet["C6"] = "Phase d'appui"
-    sheet["F6"] = "Phase d'oscillation"
-    sheet["C7"] = "Min (deg)"
-    sheet["D7"] = "Max (deg)"
-    sheet["E7"] = "Range(deg)"
-    sheet["F7"] = "Min (deg)"
-    sheet["G7"] = "Max (deg)"
-    sheet["H7"] = "Range(deg)"
 
-    sheet["K5"] = "Moment"
-    sheet["K6"] = "Phase d'appui"
-    sheet["N6"] = "Phase d'oscillation"
-    sheet["K7"] = "Min (deg)"
-    sheet["L7"] = "Max (deg)"
-    sheet["M7"] = "Range(deg)"
-    sheet["N7"] = "Min (deg)"
-    sheet["O7"] = "Max (deg)"
-    sheet["P7"] = "Range(deg)"
-
-    sheet["S5"] = "Power"
-    sheet["S6"] = "Phase d'appui"
-    sheet["V6"] = "Phase d'oscillation"
-    sheet["S7"] = "Min (deg)"
-    sheet["T7"] = "Max (deg)"
-    sheet["U7"] = "Range(deg)"
-    sheet["V7"] = "Min (deg)"
-    sheet["W7"] = "Max (deg)"
-    sheet["X7"] = "Range(deg)"
+    _prepare_header(sheet)
 
     # Titre des variables
 
     # Kinematics
-    i1 = 8
-    sheet["B" + str(i1)] = "Sagittal"
-
-    count = 0
-    names = movement_names["kinematics"]["sagittal"]
-    for i1, value in enumerate(names, start=i1 + 1):
-        sheet["B" + str(i1)] = value["fr"]
-        sheet["C" + str(i1)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["D" + str(i1)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["E" + str(i1)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["F" + str(i1)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["G" + str(i1)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["H" + str(i1)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    j1 = i1 + 1
-    sheet["B" + str(j1)] = "Frontal"
-
-    count = 0
-    names = movement_names["kinematics"]["frontal"]
-    for j1, value in enumerate(names, start=(j1 + 1)):
-        sheet["B" + str(j1)] = value["fr"]
-        sheet["C" + str(j1)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["D" + str(j1)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["E" + str(j1)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["F" + str(j1)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["G" + str(j1)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["H" + str(j1)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    k1 = j1 + 1
-    sheet["B" + str(k1)] = "Transversal"
-
-    count = 0
-    names = movement_names["kinematics"]["transversal"]
-    for k1, value in enumerate(names, start=(k1 + 1)):
-        sheet["B" + str(k1)] = value["fr"]
-        sheet["C" + str(k1)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["D" + str(k1)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["E" + str(k1)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["F" + str(k1)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["G" + str(k1)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["H" + str(k1)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
+    last_row = {}
+    initial_row = 8
+    for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
+        last_row[plane] = _populate_table(
+            sheet,
+            data=data,
+            name=name,
+            level="kinematics",
+            plane=plane,
+            initial_row=initial_row,
+            initial_col="B",
+        )
+        initial_row = last_row[plane] + 1
 
     # Moment
     i2 = 8
@@ -207,13 +168,10 @@ def generate_excel(data: dict, save_file: str):
     sheet["N6"].font = Font(bold=True)
     sheet["S6"].font = Font(bold=True)
     sheet["V6"].font = Font(bold=True)
-    sheet["B8"].font = Font(bold=True)  # Sagittal
     sheet["J8"].font = Font(bold=True)
     sheet["R8"].font = Font(bold=True)
-    sheet["B" + str(i1 + 1)].font = Font(bold=True)  # Frontal
     sheet["J" + str(i2 + 1)].font = Font(bold=True)
     sheet["R" + str(i3 + 1)].font = Font(bold=True)
-    sheet["B" + str(j1 + 1)].font = Font(bold=True)  # Transversal
     sheet["J" + str(j2 + 1)].font = Font(bold=True)
     sheet["R" + str(j3 + 1)].font = Font(bold=True)
 
@@ -231,23 +189,23 @@ def generate_excel(data: dict, save_file: str):
     border_3 = Border(bottom=Side(border_style="medium", color="000000"))
 
     # First table
-    for l in [2, 5, 8, k1 + 1]:
+    for l in [2, 5, 8, last_row["transversal"] + 1]:
         for m in range(2, 9):
             cells_to_border_1.append(chr(64 + m) + str(l))
 
-    for l in range(2, k1 + 1):
+    for l in range(2, last_row["transversal"] + 1):
         for m in ["B", "I"]:
             cells_to_border_2.append(m + str(l))
 
-    for l in range(5, k1 + 1):
+    for l in range(5, last_row["transversal"] + 1):
         cells_to_border_2.append("C" + str(l))
 
-    for l in range(8, k1 + 1):
+    for l in range(8, last_row["transversal"] + 1):
         cells_to_border_2.append("F" + str(l))
 
     for m in range(2, 9):
-        cells_to_border_3.append(chr(64 + m) + str(i1))
-        cells_to_border_3.append(chr(64 + m) + str(j1))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["sagittal"]))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["frontal"]))
 
     # Second table
     for l in [5, 8, k2 + 1]:
@@ -312,3 +270,38 @@ def generate_excel(data: dict, save_file: str):
         sheet.column_dimensions["R"].width = 40
 
     workbook.save(save_file)
+
+
+def _prepare_header(sheet):
+    sheet["B2"] = "Patient ID"
+    sheet["B3"] = "Session ID"
+    sheet["B4"] = "Date"
+    sheet["C5"] = "Cinématique"
+    sheet["C6"] = "Phase d'appui"
+    sheet["F6"] = "Phase d'oscillation"
+    sheet["C7"] = "Min (deg)"
+    sheet["D7"] = "Max (deg)"
+    sheet["E7"] = "Range(deg)"
+    sheet["F7"] = "Min (deg)"
+    sheet["G7"] = "Max (deg)"
+    sheet["H7"] = "Range(deg)"
+
+    sheet["K5"] = "Moment"
+    sheet["K6"] = "Phase d'appui"
+    sheet["N6"] = "Phase d'oscillation"
+    sheet["K7"] = "Min (deg)"
+    sheet["L7"] = "Max (deg)"
+    sheet["M7"] = "Range(deg)"
+    sheet["N7"] = "Min (deg)"
+    sheet["O7"] = "Max (deg)"
+    sheet["P7"] = "Range(deg)"
+
+    sheet["S5"] = "Power"
+    sheet["S6"] = "Phase d'appui"
+    sheet["V6"] = "Phase d'oscillation"
+    sheet["S7"] = "Min (deg)"
+    sheet["T7"] = "Max (deg)"
+    sheet["U7"] = "Range(deg)"
+    sheet["V7"] = "Min (deg)"
+    sheet["W7"] = "Max (deg)"
+    sheet["X7"] = "Range(deg)"

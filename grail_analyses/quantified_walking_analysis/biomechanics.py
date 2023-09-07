@@ -1,5 +1,6 @@
 import math
 
+
 def ranges_of_motion(file_data, variable, side, length):
     if side not in ("left", "right"):
         raise ValueError("Wrong side")
