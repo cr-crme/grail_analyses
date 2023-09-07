@@ -16,7 +16,6 @@ def _populate_table(sheet, data, name: str, level: str, plane: str, initial_row:
     names = movement_names[level][plane]
 
     sheet[f"{col(0)}{initial_row}"] = name
-    sheet[f"B{initial_row}"].font = Font(bold=True)
     for i, value in enumerate(names):
         sheet[f"{col(0)}{i + initial_row + 1}"] = value["fr"]
         sheet[f"{col(1)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Minimum Appui"], 2)
@@ -25,6 +24,11 @@ def _populate_table(sheet, data, name: str, level: str, plane: str, initial_row:
         sheet[f"{col(4)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Minimum Oscillation"], 2)
         sheet[f"{col(5)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Maximum Oscillation"], 2)
         sheet[f"{col(6)}{i + initial_row + 1}"] = round(data[names[i]["en"]]["Range Oscillation"], 2)
+
+    # Formatting
+    sheet[f"{col(0)}{initial_row}"].font = Font(bold=True)
+
+    # Return the last row
     return initial_row + len(movement_names[level][plane])
 
 
@@ -32,148 +36,23 @@ def generate_excel(data: dict, save_file: str):
     workbook = Workbook()
     sheet = workbook.active
 
-    _prepare_header(sheet)
+    _prepare_main_header(sheet)
 
-    # Titre des variables
-
-    # Kinematics
     last_row = {}
-    initial_row = 8
-    for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
-        last_row[plane] = _populate_table(
-            sheet,
-            data=data,
-            name=name,
-            level="kinematics",
-            plane=plane,
-            initial_row=initial_row,
-            initial_col="B",
-        )
-        initial_row = last_row[plane] + 1
-
-    # Moment
-    i2 = 8
-    sheet["J" + str(i2)] = "Sagittal"
-
-    count = 0
-    names = movement_names["moment"]["sagittal"]
-    for i2, value in enumerate(names, start=i2 + 1):
-        sheet["J" + str(i2)] = value["fr"]
-        sheet["K" + str(i2)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["L" + str(i2)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["M" + str(i2)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["N" + str(i2)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["O" + str(i2)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["P" + str(i2)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    j2 = i2 + 1
-    sheet["J" + str(j2)] = "Frontal"
-
-    count = 0
-    j2 = i2 + 1
-    names = movement_names["moment"]["frontal"]
-    for j2, value in enumerate(names, start=(j2 + 1)):
-        sheet["J" + str(j2)] = value["fr"]
-        sheet["K" + str(j2)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["L" + str(j2)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["M" + str(j2)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["N" + str(j2)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["O" + str(j2)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["P" + str(j2)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    k2 = j2 + 1
-    sheet["J" + str(k2)] = "Transversal"
-
-    count = 0
-    names = movement_names["moment"]["transversal"]
-    for k2, value in enumerate(names, start=(k2 + 1)):
-        sheet["J" + str(k2)] = value["fr"]
-        sheet["K" + str(k2)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["L" + str(k2)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["M" + str(k2)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["N" + str(k2)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["O" + str(k2)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["P" + str(k2)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    # Power
-    i3 = 8
-    sheet["R" + str(i3)] = "Sagittal"
-
-    count = 0
-    names = movement_names["power"]["sagittal"]
-    for i3, value in enumerate(names, start=i3 + 1):
-        sheet["R" + str(i3)] = value["fr"]
-        sheet["S" + str(i3)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["T" + str(i3)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["U" + str(i3)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["V" + str(i3)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["W" + str(i3)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["X" + str(i3)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    j3 = i3 + 1
-    sheet["R" + str(j3)] = "Frontal"
-
-    count = 0
-    j3 = i3 + 1
-    names = movement_names["power"]["frontal"]
-    for j3, value in enumerate(names, start=(j3 + 1)):
-        sheet["R" + str(j3)] = value["fr"]
-        sheet["S" + str(j3)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["T" + str(j3)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["U" + str(j3)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["V" + str(j3)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["W" + str(j3)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["X" + str(j3)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    k3 = j3 + 1
-    sheet["R" + str(k3)] = "Transversal"
-
-    count = 0
-    names = movement_names["power"]["transversal"]
-    for k3, value in enumerate(names, start=(k3 + 1)):
-        sheet["R" + str(k3)] = value["fr"]
-        sheet["S" + str(k3)] = round(data[names[count]["en"]]["Minimum Appui"], 2)
-        sheet["T" + str(k3)] = round(data[names[count]["en"]]["Maximum Appui"], 2)
-        sheet["U" + str(k3)] = round(data[names[count]["en"]]["Range Appui"], 2)
-        sheet["V" + str(k3)] = round(data[names[count]["en"]]["Minimum Oscillation"], 2)
-        sheet["W" + str(k3)] = round(data[names[count]["en"]]["Maximum Oscillation"], 2)
-        sheet["X" + str(k3)] = round(data[names[count]["en"]]["Range Oscillation"], 2)
-        count += 1
-
-    # Mise en forme
-    sheet.merge_cells("C2:H2")  # Merge de cellules
-    sheet.merge_cells("C3:H3")
-    sheet.merge_cells("C4:H4")
-    sheet.merge_cells("C5:H5")
-    sheet.merge_cells("K5:P5")
-    sheet.merge_cells("S5:X5")
-    sheet.merge_cells("C6:E6")
-    sheet.merge_cells("F6:H6")
-    sheet.merge_cells("K6:M6")
-    sheet.merge_cells("N6:P6")
-    sheet.merge_cells("S6:U6")
-    sheet.merge_cells("V6:X6")
-
-    sheet["C5"].font = Font(bold=True)  # Mise de titres en gras
-    sheet["K5"].font = Font(bold=True)
-    sheet["S5"].font = Font(bold=True)
-    sheet["C6"].font = Font(bold=True)
-    sheet["F6"].font = Font(bold=True)
-    sheet["K6"].font = Font(bold=True)
-    sheet["N6"].font = Font(bold=True)
-    sheet["S6"].font = Font(bold=True)
-    sheet["V6"].font = Font(bold=True)
-    sheet["J8"].font = Font(bold=True)
-    sheet["R8"].font = Font(bold=True)
-    sheet["J" + str(i2 + 1)].font = Font(bold=True)
-    sheet["R" + str(i3 + 1)].font = Font(bold=True)
-    sheet["J" + str(j2 + 1)].font = Font(bold=True)
-    sheet["R" + str(j3 + 1)].font = Font(bold=True)
+    for initial_col, level in zip(("B", "J", "R"), ("kinematics", "moment", "power")):
+        initial_row = 8
+        last_row[level] = {}
+        for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
+            last_row[level][plane] = _populate_table(
+                sheet,
+                data=data,
+                name=name,
+                level=level,
+                plane=plane,
+                initial_row=initial_row,
+                initial_col=initial_col,
+            )
+            initial_row = last_row[level][plane] + 1
 
     # Center text in the cell
     alignment = Alignment(horizontal="center", vertical="center")
@@ -189,55 +68,55 @@ def generate_excel(data: dict, save_file: str):
     border_3 = Border(bottom=Side(border_style="medium", color="000000"))
 
     # First table
-    for l in [2, 5, 8, last_row["transversal"] + 1]:
+    for l in [2, 5, 8, last_row["kinematics"]["transversal"] + 1]:
         for m in range(2, 9):
             cells_to_border_1.append(chr(64 + m) + str(l))
 
-    for l in range(2, last_row["transversal"] + 1):
+    for l in range(2, last_row["kinematics"]["transversal"] + 1):
         for m in ["B", "I"]:
             cells_to_border_2.append(m + str(l))
 
-    for l in range(5, last_row["transversal"] + 1):
+    for l in range(5, last_row["kinematics"]["transversal"] + 1):
         cells_to_border_2.append("C" + str(l))
 
-    for l in range(8, last_row["transversal"] + 1):
+    for l in range(8, last_row["kinematics"]["transversal"] + 1):
         cells_to_border_2.append("F" + str(l))
 
     for m in range(2, 9):
-        cells_to_border_3.append(chr(64 + m) + str(last_row["sagittal"]))
-        cells_to_border_3.append(chr(64 + m) + str(last_row["frontal"]))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["kinematics"]["sagittal"]))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["kinematics"]["frontal"]))
 
     # Second table
-    for l in [5, 8, k2 + 1]:
+    for l in [5, 8, last_row["moment"]["transversal"] + 1]:
         for m in range(10, 17):
             cells_to_border_1.append(chr(64 + m) + str(l))
 
-    for l in range(5, k2 + 1):
+    for l in range(5, last_row["moment"]["transversal"] + 1):
         for m in ["J", "K", "Q"]:
             cells_to_border_2.append(m + str(l))
 
-    for l in range(8, k2 + 1):
+    for l in range(8, last_row["moment"]["transversal"] + 1):
         cells_to_border_2.append("N" + str(l))
 
     for m in range(10, 17):
-        cells_to_border_3.append(chr(64 + m) + str(i2))
-        cells_to_border_3.append(chr(64 + m) + str(j2))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["moment"]["sagittal"]))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["moment"]["frontal"]))
 
     # Third table
-    for l in [5, 8, k3 + 1]:
+    for l in [5, 8, last_row["power"]["transversal"] + 1]:
         for m in range(18, 25):
             cells_to_border_1.append(chr(64 + m) + str(l))
 
-    for l in range(5, k3 + 1):
+    for l in range(5, last_row["power"]["transversal"] + 1):
         for m in ["R", "S", "Y"]:
             cells_to_border_2.append(m + str(l))
 
-    for l in range(8, k3 + 1):
+    for l in range(8, last_row["power"]["transversal"] + 1):
         cells_to_border_2.append("V" + str(l))
 
     for m in range(18, 25):
-        cells_to_border_3.append(chr(64 + m) + str(i2))
-        cells_to_border_3.append(chr(64 + m) + str(j2))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["power"]["sagittal"]))
+        cells_to_border_3.append(chr(64 + m) + str(last_row["power"]["frontal"]))
 
     # Adding border lines
     for cell in cells_to_border_1:
@@ -272,7 +151,7 @@ def generate_excel(data: dict, save_file: str):
     workbook.save(save_file)
 
 
-def _prepare_header(sheet):
+def _prepare_main_header(sheet):
     sheet["B2"] = "Patient ID"
     sheet["B3"] = "Session ID"
     sheet["B4"] = "Date"
@@ -305,3 +184,29 @@ def _prepare_header(sheet):
     sheet["V7"] = "Min (deg)"
     sheet["W7"] = "Max (deg)"
     sheet["X7"] = "Range(deg)"
+
+    # Formatting
+    sheet.merge_cells("C2:H2")
+    sheet.merge_cells("C3:H3")
+    sheet.merge_cells("C4:H4")
+
+    sheet.merge_cells("C5:H5")
+    sheet["C5"].font = Font(bold=True)
+    sheet.merge_cells("C6:E6")
+    sheet.merge_cells("F6:H6")
+    sheet["C6"].font = Font(bold=True)
+    sheet["F6"].font = Font(bold=True)
+
+    sheet.merge_cells("K5:P5")
+    sheet["K5"].font = Font(bold=True)
+    sheet.merge_cells("K6:M6")
+    sheet.merge_cells("N6:P6")
+    sheet["K6"].font = Font(bold=True)
+    sheet["N6"].font = Font(bold=True)
+
+    sheet.merge_cells("S5:X5")
+    sheet["S5"].font = Font(bold=True)
+    sheet.merge_cells("S6:U6")
+    sheet.merge_cells("V6:X6")
+    sheet["S6"].font = Font(bold=True)
+    sheet["V6"].font = Font(bold=True)
