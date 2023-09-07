@@ -31,57 +31,32 @@ global Files
 Files = []
 
 
-def column_average(fileData, variable, side, length):
-    data = fileData[fileData.iloc[:, 1] == variable]
-    print(data)
-    ExcelData = {}
+def ranges_of_motion(file_data, variable, side, length):
+    if side not in ("left", "right"):
+        raise ValueError("Wrong side")
 
-    if side == "left":
-        dataLeft = data[data.iloc[:, 0] == "left"]
-        columnAverageLeft = dataLeft.iloc[:, 3:].mean()
+    data = file_data[file_data.iloc[:, 1] == variable]
+    data_side = data[data.iloc[:, 0] == side]
+    average = data_side.iloc[:, 3:].mean()
 
-        leftOscillation = columnAverageLeft[length[0]:]
-        maximumLeftOscillation = max(leftOscillation)
-        minimumLeftOscillation = min(leftOscillation)
-        rangeLeftOscillation = maximumLeftOscillation - minimumLeftOscillation
+    swing_phase = average[length[0 if side == "left" else 1]:]
+    maximum_swing = max(swing_phase)
+    minimum_swing = min(swing_phase)
+    range_swing = maximum_swing - minimum_swing
 
-        leftAppui = columnAverageLeft[:length[0]]
-        maximumLeftAppui = max(leftAppui)
-        minimumLeftAppui = min(leftAppui)
-        rangeLeftAppui = maximumLeftAppui - minimumLeftAppui
+    stance_phase = average[:length[0 if side == "left" else 1]]
+    maximum_stance = max(stance_phase)
+    minimum_stance = min(stance_phase)
+    range_stance = maximum_stance - minimum_stance
 
-        ExcelData = {
-            "Maximum Oscillation": maximumLeftOscillation,
-            "Minimum Oscillation": minimumLeftOscillation,
-            "Range Oscillation": rangeLeftOscillation,
-            "Maximum Appui": maximumLeftAppui,
-            "Minimum Appui": minimumLeftAppui,
-            "Range Appui": rangeLeftAppui,
-        }
-
-    if side == "right":
-        dataRight = data[data.iloc[:, 0] == "right"]
-        columnAverageRight = dataRight.iloc[:, 3:].mean()
-
-        rightOscillation = columnAverageRight[length[1]:]
-        maximumRightOscillation = max(rightOscillation)
-        minimumRightOscillation = min(rightOscillation)
-        rangeRightOscillation = maximumRightOscillation - minimumRightOscillation
-
-        rightAppui = columnAverageRight[:length[1]]
-        maximumRightAppui = max(rightAppui)
-        minimumRightAppui = min(rightAppui)
-        rangeRightAppui = maximumRightAppui - minimumRightAppui
-
-        ExcelData = {
-            "Maximum Oscillation": maximumRightOscillation,
-            "Minimum Oscillation": minimumRightOscillation,
-            "Range Oscillation": rangeRightOscillation,
-            "Maximum Appui": maximumRightAppui,
-            "Minimum Appui": minimumRightAppui,
-            "Range Appui": rangeRightAppui
-        }
-    return ExcelData
+    return {
+        "Maximum Oscillation": maximum_swing,
+        "Minimum Oscillation": minimum_swing,
+        "Range Oscillation": range_swing,
+        "Maximum Appui": maximum_stance,
+        "Minimum Appui": minimum_stance,
+        "Range Appui": range_stance,
+    }
 
 
 def create_page_numbered_pdf(filePath):
@@ -162,7 +137,7 @@ def process_files():
             names = movement_names[level][plane]
             for index in range(0 if side == "left" else 1, len(names), 2):
                 name = names[index]["en"]
-                ExcelData[name] = column_average(fileData, name, side, [nbLeftSwing, nbRightSwing])
+                ExcelData[name] = ranges_of_motion(fileData, name, side, [nbLeftSwing, nbRightSwing])
 
         # Kinematics
         for level in ("kinematics", "moment", "power"):
