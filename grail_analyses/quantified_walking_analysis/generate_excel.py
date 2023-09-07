@@ -60,95 +60,68 @@ def generate_excel(data: dict, save_file: str):
         for cell in row:
             cell.alignment = alignment
 
-    cells_to_border_1 = []  # Borders
-    cells_to_border_2 = []
-    cells_to_border_3 = []
-    border_1 = Border(top=Side(border_style="thick", color="000000"))
-    border_2 = Border(left=Side(border_style="thick", color="000000"))
-    border_3 = Border(bottom=Side(border_style="medium", color="000000"))
-
-    # First table
-    for l in [2, 5, 8, last_row["kinematics"]["transversal"] + 1]:
-        for m in range(2, 9):
-            cells_to_border_1.append(chr(64 + m) + str(l))
-
-    for l in range(2, last_row["kinematics"]["transversal"] + 1):
-        for m in ["B", "I"]:
-            cells_to_border_2.append(m + str(l))
-
-    for l in range(5, last_row["kinematics"]["transversal"] + 1):
-        cells_to_border_2.append("C" + str(l))
-
-    for l in range(8, last_row["kinematics"]["transversal"] + 1):
-        cells_to_border_2.append("F" + str(l))
-
-    for m in range(2, 9):
-        cells_to_border_3.append(chr(64 + m) + str(last_row["kinematics"]["sagittal"]))
-        cells_to_border_3.append(chr(64 + m) + str(last_row["kinematics"]["frontal"]))
-
-    # Second table
-    for l in [5, 8, last_row["moment"]["transversal"] + 1]:
-        for m in range(10, 17):
-            cells_to_border_1.append(chr(64 + m) + str(l))
-
-    for l in range(5, last_row["moment"]["transversal"] + 1):
-        for m in ["J", "K", "Q"]:
-            cells_to_border_2.append(m + str(l))
-
-    for l in range(8, last_row["moment"]["transversal"] + 1):
-        cells_to_border_2.append("N" + str(l))
-
-    for m in range(10, 17):
-        cells_to_border_3.append(chr(64 + m) + str(last_row["moment"]["sagittal"]))
-        cells_to_border_3.append(chr(64 + m) + str(last_row["moment"]["frontal"]))
-
-    # Third table
-    for l in [5, 8, last_row["power"]["transversal"] + 1]:
-        for m in range(18, 25):
-            cells_to_border_1.append(chr(64 + m) + str(l))
-
-    for l in range(5, last_row["power"]["transversal"] + 1):
-        for m in ["R", "S", "Y"]:
-            cells_to_border_2.append(m + str(l))
-
-    for l in range(8, last_row["power"]["transversal"] + 1):
-        cells_to_border_2.append("V" + str(l))
-
-    for m in range(18, 25):
-        cells_to_border_3.append(chr(64 + m) + str(last_row["power"]["sagittal"]))
-        cells_to_border_3.append(chr(64 + m) + str(last_row["power"]["frontal"]))
-
-    # Adding border lines
-    for cell in cells_to_border_1:
-        sheet[cell].border = border_1
-
-    for cell in cells_to_border_2:
-        existing_border = sheet[cell].border
-        left_border = existing_border.left
-        right_border = existing_border.right
-        top_border = existing_border.top
-        bottom_border = existing_border.bottom
-        new_border = Border(top=top_border, bottom=bottom_border,
-                            left=border_2.left, right=right_border)
-        sheet[cell].border = new_border
-
-    for cell in cells_to_border_3:
-        existing_border = sheet[cell].border
-        left_border = existing_border.left
-        right_border = existing_border.right
-        top_border = existing_border.top
-        bottom_border = existing_border.bottom
-        new_border = Border(top=top_border, bottom=border_3.bottom,
-                            left=left_border, right=right_border)
-        sheet[cell].border = new_border
-
     for column in sheet.columns:  # Adjust cell dimension
         sheet.column_dimensions[column[0].column_letter].width = 12
         sheet.column_dimensions["B"].width = 40
         sheet.column_dimensions["J"].width = 40
         sheet.column_dimensions["R"].width = 40
 
+    _add_borders(sheet, last_row)
+
     workbook.save(save_file)
+
+
+def _add_borders(sheet, last_row: dict):
+    def to_col(col_name, i):
+        return chr(ord(col_name) + i)
+
+    border_thick = Side(border_style="thick", color="000000")
+    border_med = Side(border_style="medium", color="000000")
+    for col, level in zip(("B", "J", "R"), ("kinematics", "moment", "power")):
+        _draw_square_borders(
+            sheet,
+            border_thick,
+            top_left_corner=f"{to_col(col, 0)}5",
+            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['transversal']}"
+        )
+        _draw_square_borders(
+            sheet,
+            border_thick,
+            top_left_corner=f"{to_col(col, 1)}5",
+            bottom_right_corner=f"{to_col(col, 6)}7"
+        )
+        _draw_square_borders(
+            sheet,
+            border_med,
+            top_left_corner=f"{to_col(col, 0)}{last_row[level]['sagittal'] + 1}",
+            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['frontal']}"
+        )
+        _draw_square_borders(
+            sheet,
+            border_thick,
+            top_left_corner=f"{to_col(col, 1)}5",
+            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['transversal']}"
+        )
+        _draw_square_borders(
+            sheet,
+            border_thick,
+            top_left_corner=f"{to_col(col, 0)}8",
+            bottom_right_corner=f"{to_col(col, 3)}{last_row[level]['transversal']}"
+        )
+
+
+def _draw_square_borders(sheet, format, top_left_corner: str, bottom_right_corner: str):
+    top_right_corner = f"{bottom_right_corner[0]}{top_left_corner[1:]}"
+    bottom_left_corner = f"{top_left_corner[0]}{bottom_right_corner[1:]}"
+
+    for s in sheet[f"{top_left_corner}:{top_right_corner}"][0]:
+        s.border = Border(top=format, left=s.border.left, right=s.border.right, bottom=s.border.bottom)
+    for s in sheet[f"{bottom_left_corner}:{bottom_right_corner}"][0]:
+        s.border = Border(top=s.border.top, left=s.border.left, right=s.border.right, bottom=format)
+    for s in sheet[f"{top_left_corner}:{bottom_left_corner}"]:
+        s[0].border = Border(top=s[0].border.top, left=format, right=s[0].border.right, bottom=s[0].border.bottom)
+    for s in sheet[f"{top_right_corner}:{bottom_right_corner}"]:
+        s[0].border = Border(top=s[0].border.top, left=s[0].border.left, right=format, bottom=s[0].border.bottom)
 
 
 def _prepare_main_header(sheet):
@@ -186,6 +159,9 @@ def _prepare_main_header(sheet):
     sheet["X7"] = "Range(deg)"
 
     # Formatting
+    format = Side(border_style="thick", color="000000")
+    _draw_square_borders(sheet, format=format, top_left_corner="B2", bottom_right_corner="H4")
+
     sheet.merge_cells("C2:H2")
     sheet.merge_cells("C3:H3")
     sheet.merge_cells("C4:H4")
