@@ -87,44 +87,32 @@ def create_page_numbered_pdf(filePath):
         output.write(outputStream)
 
 
+def find_stance_len(data, side):
+    if side not in ("left", "right"):
+        raise ValueError("Wrong side")
+
+        # Find number of columns for swing and stance phase
+    swing_time = data[data.iloc[:, 1] == f"{'L' if side == 'left' else 'R'}.Swing.Time"]
+    stance_time = data[data.iloc[:, 1] == f"{'L' if side == 'left' else 'R'}.Stance.Time"]
+
+    sided_swing_time = swing_time[swing_time.iloc[:, 0] == side]
+    sided_stance_time = stance_time[stance_time.iloc[:, 0] == side]
+
+    swing_time_average = sided_swing_time.iloc[:, 3].mean()
+    stance_time_average = sided_stance_time.iloc[:, 3].mean()
+
+    total_time_average = swing_time_average + stance_time_average
+    swing_percent = swing_time_average / total_time_average * 100
+    return math.ceil(swing_percent * 101 / 100)
+
+
 def process_files():
     for file in Files:
         ExcelData = {}
         fileData = pd.read_csv(file, header=None)
 
-
-
-
-        # Déterminer nombre colonnes appartenant au swing et au stance
-        # côté gauche
-        LSwingTime = fileData[fileData.iloc[:, 1] == "L.Swing.Time"]
-        LStanceTime = fileData[fileData.iloc[:, 1] == "L.Stance.Time"]
-
-        leftLSwingTime = LSwingTime[LSwingTime.iloc[:, 0] == "left"]
-        leftLStanceTime = LStanceTime[LStanceTime.iloc[:, 0] == "left"]
-
-        leftLSwingTimeAverage = leftLSwingTime.iloc[:, 3].mean()
-        leftLStanceTimeAverage = leftLStanceTime.iloc[:, 3].mean()
-
-        totalLeftTimeAverage = leftLSwingTimeAverage + leftLStanceTimeAverage
-        LSwingPercent = leftLSwingTimeAverage / totalLeftTimeAverage * 100
-
-        # côté droit
-        RSwingTime = fileData[fileData.iloc[:, 1] == "R.Swing.Time"]
-        RStanceTime = fileData[fileData.iloc[:, 1] == "R.Stance.Time"]
-
-        rightRSwingTime = RSwingTime[RSwingTime.iloc[:, 0] == "right"]
-        rightRStanceTime = RStanceTime[RStanceTime.iloc[:, 0] == "right"]
-
-        rightRSwingTimeAverage = rightRSwingTime.iloc[:, 3].mean()
-        rightRStanceTimeAverage = rightRStanceTime.iloc[:, 3].mean()
-
-        totalRightTimeAverage = rightRSwingTimeAverage + rightRStanceTimeAverage
-        RSwingPercent = rightRSwingTimeAverage / totalRightTimeAverage * 100
-
-        # Produit croisé pour déterminer le nombre de colonnes faisant partie du Swing (sur 101 colonnes totales)
-        nbLeftSwing = math.ceil(LSwingPercent * 101 / 100)
-        nbRightSwing = math.ceil(RSwingPercent * 101 / 100)
+        nbLeftSwing = find_stance_len(fileData, "left")
+        nbRightSwing = find_stance_len(fileData, "right")
 
         def _populate_excel_data(level: str, plane: str, side: str):
             if level not in ("kinematics", "moment", "power"):
