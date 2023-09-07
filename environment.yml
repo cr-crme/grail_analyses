@@ -1,12 +1,10 @@
 # create a dev conda environment with: `make create_env` or `conda env create -f environment.yml`
-name: AQM
+name: grail_analyses
 channels:
 - conda-forge
 dependencies:
-- sys
-- math
-- os
 - pandas
-- PyQt5
+- pyqt
 - reportlab
 - openpyxl
+- pypdf2
