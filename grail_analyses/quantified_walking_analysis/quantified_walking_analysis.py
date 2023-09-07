@@ -25,11 +25,13 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side
 
+from config import movement_names
+
 global Files
 Files = []
 
 
-def columnAverage(fileData, variable, side, length):
+def column_average(fileData, variable, side, length):
     data = fileData[fileData.iloc[:, 1] == variable]
     print(data)
     ExcelData = {}
@@ -115,172 +117,8 @@ def process_files():
         ExcelData = {}
         fileData = pd.read_csv(file, header=None)
 
-        # Mouvements sagittaux
-        cinematicSagittal = ["Tronc gauche",
-                             "Tronc droit",
-                             "Bassin gauche",
-                             "Bassin droit",
-                             "Hanche gauche",
-                             "Hanche droite",
-                             "Genou gauche",
-                             "Genou droit",
-                             "Cheville gauche",
-                             "Cheville droite",
-                             ]
 
-        cinematicSagittalEnglish = ["Rotation TrunkFlex",
-                                    "Rotation TrunkFlex",
-                                    "Rotation PelvicTil",
-                                    "Rotation PelvicTil",
-                                    "Rotation LHipFlex",
-                                    "Rotation RHipFlex",
-                                    "Rotation LKneeFlex",
-                                    "Rotation RKneeFlex",
-                                    "Rotation LAnkleFlex",
-                                    "Rotation RAnkleFlex",
-                                    ]
 
-        momentSagittal = ["Hanche gauche",
-                          "Hanche droite",
-                          "Genou gauche",
-                          "Genou droit",
-                          "Cheville gauche",
-                          "Cheville droite",
-                          ]
-
-        momentSagittalEnglish = ["Moment LHipFlex",
-                                 "Moment RHipFlex",
-                                 "Moment LKneeFlex",
-                                 "Moment RKneeFlex",
-                                 "Moment LAnkleFlex",
-                                 "Moment RAnkleFlex",
-                                 ]
-
-        powerSagittal = ["Hanche gauche",
-                         "Hanche droite",
-                         "Genou gauche",
-                         "Genou droit",
-                         "Cheville gauche",
-                         "Cheville droite",
-                         ]
-
-        powerSagittalEnglish = ["Power LHipFlex",
-                                "Power RHipFlex",
-                                "Power LKneeFlex",
-                                "Power RKneeFlex",
-                                "Power LAnkleFlex",
-                                "Power RAnkleFlex",
-                                ]
-
-        # Mouvements frontaux
-        cinematicFrontal = ["Tronc gauche",
-                            "Tronc droit",
-                            "Bassin gauche",
-                            "Bassin droit",
-                            "Hanche gauche",
-                            "Hanche droite",
-                            "Genou gauche",
-                            "Genou droit",
-                            ]
-
-        cinematicFrontalEnglish = ["Rotation TrunkTilt",
-                                   "Rotation TrunkTilt",
-                                   "Rotation PelvicObl",
-                                   "Rotation PelvicObl",
-                                   "Rotation LHipAbAd",
-                                   "Rotation RHipAbAd",
-                                   "Rotation LKneeAbAd",
-                                   "Rotation RKneeAbAd",
-                                   ]
-
-        momentFrontal = ["Hanche gauche",
-                         "Hanche droite",
-                         "Genou gauche",
-                         "Genou droit",
-                         "Cheville gauche",
-                         "Cheville droite",
-                         ]
-
-        momentFrontalEnglish = ["Moment LHipAbAd",
-                                "Moment RHipAbAd",
-                                "Moment LKneeAbAd",
-                                "Moment RKneeAbAd",
-                                "Moment LAnkleAbAd",
-                                "Moment RAnkleAbAd",
-                                ]
-
-        powerFrontal = ["Hanche gauche",
-                        "Hanche droite",
-                        "Genou gauche",
-                        "Genou droit",
-                        "Cheville gauche",
-                        "Cheville droite",
-                        ]
-
-        powerFrontalEnglish = ["Power LHipAbAd",
-                               "Power RHipAbAd",
-                               "Power LKneeAbAd",
-                               "Power RKneeAbAd",
-                               "Power LAnkleAbAd",
-                               "Power RAnkleAbAd",
-                               ]
-
-        # Mouvements transversaux
-        cinematicTransversal = ["Tronc gauche",
-                                "Tronc droit",
-                                "Bassin gauche",
-                                "Bassin droit",
-                                "Hanche gauche",
-                                "Hanche droite",
-                                "Genou gauche",
-                                "Genou droit",
-                                "Progression du pied gauche",
-                                "Progression du pied droit",
-                                ]
-
-        cinematicTransversalEnglish = ["Rotation TrunkRot",
-                                       "Rotation TrunkRot",
-                                       "Rotation PelvicRot",
-                                       "Rotation PelvicRot",
-                                       "Rotation LHipRot",
-                                       "Rotation RHipRot",
-                                       "Rotation LKneeRot",
-                                       "Rotation RKneeRot",
-                                       "LProgression",
-                                       "RProgression",
-                                       ]
-
-        momentTransversal = ["Hanche gauche",
-                             "Hanche droite",
-                             "Genou gauche",
-                             "Genou droit",
-                             "Cheville gauche",
-                             "Cheville droite",
-                             ]
-
-        momentTransversalEnglish = ["Moment LHipRot",
-                                    "Moment RHipRot",
-                                    "Moment LKneeRot",
-                                    "Moment RKneeRot",
-                                    "Moment LAnkleRot",
-                                    "Moment RAnkleRot",
-                                    ]
-
-        powerTransversal = ["Hanche gauche",
-                            "Hanche droite",
-                            "Genou gauche",
-                            "Genou droit",
-                            "Cheville gauche",
-                            "Cheville droite",
-                            ]
-
-        powerTransversalEnglish = ["Power LHipRot",
-                                   "Power RHipRot",
-                                   "Power LKneeRot",
-                                   "Power RKneeRot",
-                                   "Power LAnkleRot",
-                                   "Power RAnkleRot",
-                                   ]
 
         # Déterminer nombre colonnes appartenant au swing et au stance
         # côté gauche
@@ -313,82 +151,24 @@ def process_files():
         nbLeftSwing = math.ceil(LSwingPercent * 101 / 100)
         nbRightSwing = math.ceil(RSwingPercent * 101 / 100)
 
-        # cinematic
-        for i in range(0, len(cinematicSagittalEnglish), 2):
-            ExcelData[cinematicSagittalEnglish[i]] = columnAverage(fileData, cinematicSagittalEnglish[i], "left", [
-                nbLeftSwing, nbRightSwing])
+        def _populate_excel_data(level: str, plane: str, side: str):
+            if level not in ("kinematics", "moment", "power"):
+                raise ValueError("Wrong level")
+            if plane not in ("sagittal", "frontal", "transversal"):
+                raise ValueError("Wrong plane")
+            if side not in ("left", "right"):
+                raise ValueError("Wrong side")
 
-        for i in range(0, len(cinematicFrontalEnglish), 2):
-            ExcelData[cinematicFrontalEnglish[i]] = columnAverage(fileData, cinematicFrontalEnglish[i], "left", [
-                nbLeftSwing, nbRightSwing])
+            names = movement_names[level][plane]
+            for index in range(0 if side == "left" else 1, len(names), 2):
+                name = names[index]["en"]
+                ExcelData[name] = column_average(fileData, name, side, [nbLeftSwing, nbRightSwing])
 
-        for i in range(0, len(cinematicTransversalEnglish), 2):
-            ExcelData[cinematicTransversalEnglish[i]] = columnAverage(fileData, cinematicTransversalEnglish[i], "left",
-                                                                      [
-                                                                          nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(cinematicSagittalEnglish), 2):
-            ExcelData[cinematicSagittalEnglish[i]] = columnAverage(fileData, cinematicSagittalEnglish[i], "right", [
-                nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(cinematicFrontalEnglish), 2):
-            ExcelData[cinematicFrontalEnglish[i]] = columnAverage(fileData, cinematicFrontalEnglish[i], "right", [
-                nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(cinematicTransversalEnglish), 2):
-            ExcelData[cinematicTransversalEnglish[i]] = columnAverage(fileData, cinematicTransversalEnglish[i], "right",
-                                                                      [
-                                                                          nbLeftSwing, nbRightSwing])
-
-        # moment
-        for i in range(0, len(momentSagittalEnglish), 2):
-            ExcelData[momentSagittalEnglish[i]] = columnAverage(
-                fileData, momentSagittalEnglish[i], "left", [nbLeftSwing, nbRightSwing])
-
-        for i in range(0, len(momentFrontalEnglish), 2):
-            ExcelData[momentFrontalEnglish[i]] = columnAverage(
-                fileData, momentFrontalEnglish[i], "left", [nbLeftSwing, nbRightSwing])
-
-        for i in range(0, len(momentTransversalEnglish), 2):
-            ExcelData[momentTransversalEnglish[i]] = columnAverage(fileData, momentTransversalEnglish[i], "left", [
-                nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(momentSagittalEnglish), 2):
-            ExcelData[momentSagittalEnglish[i]] = columnAverage(fileData, momentSagittalEnglish[i], "right", [
-                nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(momentFrontalEnglish), 2):
-            ExcelData[momentFrontalEnglish[i]] = columnAverage(
-                fileData, momentFrontalEnglish[i], "right", [nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(momentTransversalEnglish), 2):
-            ExcelData[momentTransversalEnglish[i]] = columnAverage(fileData, momentTransversalEnglish[i], "right", [
-                nbLeftSwing, nbRightSwing])
-
-        # power
-        for i in range(0, len(powerSagittalEnglish), 2):
-            ExcelData[powerSagittalEnglish[i]] = columnAverage(
-                fileData, powerSagittalEnglish[i], "left", [nbLeftSwing, nbRightSwing])
-
-        for i in range(0, len(powerFrontalEnglish), 2):
-            ExcelData[powerFrontalEnglish[i]] = columnAverage(
-                fileData, powerFrontalEnglish[i], "left", [nbLeftSwing, nbRightSwing])
-
-        for i in range(0, len(powerTransversalEnglish), 2):
-            ExcelData[powerTransversalEnglish[i]] = columnAverage(fileData, powerTransversalEnglish[i], "left", [
-                nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(powerSagittalEnglish), 2):
-            ExcelData[powerSagittalEnglish[i]] = columnAverage(
-                fileData, powerSagittalEnglish[i], "right", [nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(powerFrontalEnglish), 2):
-            ExcelData[powerFrontalEnglish[i]] = columnAverage(
-                fileData, powerFrontalEnglish[i], "right", [nbLeftSwing, nbRightSwing])
-
-        for i in range(1, len(powerTransversalEnglish), 2):
-            ExcelData[powerTransversalEnglish[i]] = columnAverage(fileData, powerTransversalEnglish[i], "right", [
-                nbLeftSwing, nbRightSwing])
+        # Kinematics
+        for level in ("kinematics", "moment", "power"):
+            for side in ("left", "right"):
+                for plane in ("sagittal", "frontal", "transversal"):
+                    _populate_excel_data(level=level, plane=plane, side=side)
 
         # PDF
         folderPath = os.path.dirname(file) + "/"  # À MODIFIER
@@ -438,75 +218,46 @@ def process_files():
         ]))
         elements.append(phasesTable)
 
-        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"],
-                    ["Sagittal"],
-                    ]
-        for i in range(len(cinematicSagittal)):
-            row = [cinematicSagittal[i],
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[cinematicSagittalEnglish[i]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"]]
 
-        measures.append(["Frontal"])
-        for j in range(len(cinematicFrontal)):
-            row = [cinematicFrontal[j],
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[cinematicFrontalEnglish[j]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        def _fill_measures(name: str, level: str, plane: str):
+            if level not in ("kinematics", "moment", "power"):
+                raise ValueError("Wrong level")
+            if plane not in ("sagittal", "frontal", "transversal"):
+                raise ValueError("Wrong plane")
 
-        measures.append(["Transversal"])
-        for k in range(len(cinematicTransversal)):
-            row = [cinematicTransversal[k],
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[cinematicTransversalEnglish[k]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+            measures.append([name])
+            names = movement_names[level][plane]
+            for i in range(len(names)):
+                row = [
+                    names[i]["fr"],
+                    round(ExcelData[names[i]["en"]]["Minimum Appui"], 2),
+                    round(ExcelData[names[i]["en"]]["Maximum Appui"], 2),
+                    round(ExcelData[names[i]["en"]]["Range Appui"], 2),
+                    round(ExcelData[names[i]["en"]]["Minimum Oscillation"], 2),
+                    round(ExcelData[names[i]["en"]]["Maximum Oscillation"], 2),
+                    round(ExcelData[names[i]["en"]]["Range Oscillation"], 2),
+                ]
+                measures.append(row)
 
+        for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
+            _fill_measures(name=name, level="kinematics", plane=plane)
+
+        n_sagittal = len(movement_names["kinematics"]["sagittal"]) - 1
+        n_frontal = len(movement_names["kinematics"]["frontal"]) - 1
         measureTable = Table(measures, colWidths=[140, 61, 61, 61, 61, 61, 61])
         measureTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + 3), (0, i + 3), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + j + 5), (0, i + j + 5), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + 3), (0, n_sagittal + 3), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + n_frontal + 5), (0, n_sagittal + n_frontal + 5), 'Helvetica-Bold'),
             ('LINEBEFORE', (0, 0), (0, -1), 2, colors.black),
             ('LINEAFTER', (-1, 0), (-1, -1), 2, colors.black),
             ('LINEAFTER', (-4, 0), (-4, -1), 1, colors.black),
             ('LINEAFTER', (0, 0), (0, -1), 1, colors.black),
-            ('LINEBELOW', (0, i + 2), (-1, i + 2), 1, colors.black),
-            ('LINEBELOW', (0, i + j + 4), (-1, i + j + 4), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + 2), (-1, n_sagittal + 2), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + n_frontal + 4), (-1, n_sagittal + n_frontal + 4), 1, colors.black),
             ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
             ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
         ]))
@@ -515,8 +266,7 @@ def process_files():
         elements.append(PageBreak())
 
         # Moment
-        title = [["Moment"],
-                 ]
+        title = [["Moment"]]
         titleTable = Table(title, colWidths=[475])
         titleTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -525,8 +275,7 @@ def process_files():
         ]))
         elements.append(titleTable)
 
-        phases = [["", "Phase d'Appui", "Phase d'Oscillations"],
-                  ]
+        phases = [["", "Phase d'Appui", "Phase d'Oscillations"]]
         phasesTable = Table(phases, colWidths=[140, 183, 183])
         phasesTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -539,74 +288,26 @@ def process_files():
         ]))
         elements.append(phasesTable)
 
-        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"],
-                    ["Sagittal"],
-                    ]
-        for i in range(len(momentSagittal)):
-            row = [momentSagittal[i],
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[momentSagittalEnglish[i]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"]]
 
-        measures.append(["Frontal"])
-        for j in range(len(momentFrontal)):
-            row = [momentFrontal[j],
-                   round(ExcelData[momentFrontalEnglish[j]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[momentFrontalEnglish[j]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[momentFrontalEnglish[j]]["Range Appui"], 2),
-                   round(ExcelData[momentFrontalEnglish[j]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[momentFrontalEnglish[j]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[momentFrontalEnglish[j]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
-
-        measures.append(["Transversal"])
-        for k in range(len(momentTransversal)):
-            row = [momentTransversal[k],
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[momentTransversalEnglish[k]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
+            _fill_measures(name=name, level="moment", plane=plane)
 
         measureTable = Table(measures, colWidths=[140, 61, 61, 61, 61, 61, 61])
+        n_sagittal = len(movement_names["moment"]["sagittal"]) - 1
+        n_frontal = len(movement_names["moment"]["frontal"]) - 1
         measureTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + 3), (0, i + 3), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + j + 5), (0, i + j + 5), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + 3), (0, n_sagittal + 3), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + n_frontal + 5), (0, n_sagittal + n_frontal + 5), 'Helvetica-Bold'),
             ('LINEBEFORE', (0, 0), (0, -1), 2, colors.black),
             ('LINEAFTER', (-1, 0), (-1, -1), 2, colors.black),
             ('LINEAFTER', (-4, 0), (-4, -1), 1, colors.black),
             ('LINEAFTER', (0, 0), (0, -1), 1, colors.black),
-            ('LINEBELOW', (0, i + 2), (-1, i + 2), 1, colors.black),
-            ('LINEBELOW', (0, i + j + 4), (-1, i + j + 4), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + 2), (-1, n_sagittal + 2), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + n_frontal + 4), (-1, n_sagittal + n_frontal + 4), 1, colors.black),
             ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
             ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
         ]))
@@ -615,8 +316,7 @@ def process_files():
         elements.append(PageBreak())
 
         # Power
-        title = [["Puissance"],
-                 ]
+        title = [["Puissance"]]
         titleTable = Table(title, colWidths=[475])
         titleTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -625,8 +325,7 @@ def process_files():
         ]))
         elements.append(titleTable)
 
-        phases = [["", "Phase d'Appui", "Phase d'Oscillations"],
-                  ]
+        phases = [["", "Phase d'Appui", "Phase d'Oscillations"]]
         phasesTable = Table(phases, colWidths=[140, 183, 183])
         phasesTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -639,73 +338,26 @@ def process_files():
         ]))
         elements.append(phasesTable)
 
-        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"],
-                    ["Sagittal"],
-                    ]
-        for i in range(len(powerSagittal)):
-            row = [powerSagittal[i],
-                   round(ExcelData[powerSagittalEnglish[i]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[powerSagittalEnglish[i]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[powerSagittalEnglish[i]]["Range Appui"], 2),
-                   round(ExcelData[powerSagittalEnglish[i]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[powerSagittalEnglish[i]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[powerSagittalEnglish[i]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"]]
 
-        measures.append(["Frontal"])
-        for j in range(len(powerFrontal)):
-            row = [powerFrontal[j],
-                   round(ExcelData[powerFrontalEnglish[j]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[powerFrontalEnglish[j]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[powerFrontalEnglish[j]]["Range Appui"], 2),
-                   round(ExcelData[powerFrontalEnglish[j]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[powerFrontalEnglish[j]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[powerFrontalEnglish[j]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
-
-        measures.append(["Transversal"])
-        for k in range(len(powerTransversal)):
-            row = [powerTransversal[k],
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Minimum Appui"], 2),
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Maximum Appui"], 2),
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Range Appui"], 2),
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Minimum Oscillation"], 2),
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Maximum Oscillation"], 2),
-                   round(ExcelData[powerTransversalEnglish[k]]
-                         ["Range Oscillation"], 2),
-                   ]
-            measures.append(row)
+        for name, plane in zip(("Sagittal", "Frontal", "Transversal"), ("sagittal", "frontal", "transversal")):
+            _fill_measures(name=name, level="power", plane=plane)
 
         measureTable = Table(measures, colWidths=[140, 61, 61, 61, 61, 61, 61])
+        n_sagittal = len(movement_names["power"]["sagittal"]) - 1
+        n_frontal = len(movement_names["power"]["frontal"]) - 1
         measureTable.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + 3), (0, i + 3), 'Helvetica-Bold'),
-            ('FONTNAME', (0, i + j + 5), (0, i + j + 5), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + 3), (0, n_sagittal + 3), 'Helvetica-Bold'),
+            ('FONTNAME', (0, n_sagittal + n_frontal + 5), (0, n_sagittal + n_frontal + 5), 'Helvetica-Bold'),
             ('LINEBEFORE', (0, 0), (0, -1), 2, colors.black),
             ('LINEAFTER', (-1, 0), (-1, -1), 2, colors.black),
             ('LINEAFTER', (-4, 0), (-4, -1), 1, colors.black),
             ('LINEAFTER', (0, 0), (0, -1), 1, colors.black),
-            ('LINEBELOW', (0, i + 2), (-1, i + 2), 1, colors.black),
-            ('LINEBELOW', (0, i + j + 4), (-1, i + j + 4), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + 2), (-1, n_sagittal + 2), 1, colors.black),
+            ('LINEBELOW', (0, n_sagittal + n_frontal + 4), (-1, n_sagittal + n_frontal + 4), 1, colors.black),
             ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
             ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
         ]))
@@ -763,60 +415,45 @@ def process_files():
         sheet["B" + str(i1)] = "Sagittal"
 
         count = 0
-        for i1, value in enumerate(cinematicSagittal, start=i1 + 1):
-            sheet["B" + str(i1)] = value
-            sheet["C" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["D" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["E" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["F" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["G" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["H" + str(i1)] = round(ExcelData[cinematicSagittalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["kinematics"]["sagittal"]
+        for i1, value in enumerate(names, start=i1 + 1):
+            sheet["B" + str(i1)] = value["fr"]
+            sheet["C" + str(i1)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["D" + str(i1)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["E" + str(i1)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["F" + str(i1)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["G" + str(i1)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["H" + str(i1)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         j1 = i1 + 1
         sheet["B" + str(j1)] = "Frontal"
 
         count = 0
-        for j1, value in enumerate(cinematicFrontal, start=(j1 + 1)):
-            sheet["B" + str(j1)] = value
-            sheet["C" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["D" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["E" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["F" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["G" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["H" + str(j1)] = round(ExcelData[cinematicFrontalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["kinematics"]["frontal"]
+        for j1, value in enumerate(names, start=(j1 + 1)):
+            sheet["B" + str(j1)] = value["fr"]
+            sheet["C" + str(j1)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["D" + str(j1)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["E" + str(j1)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["F" + str(j1)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["G" + str(j1)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["H" + str(j1)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         k1 = j1 + 1
         sheet["B" + str(k1)] = "Transversal"
 
         count = 0
-        for k1, value in enumerate(cinematicTransversal, start=(k1 + 1)):
-            sheet["B" + str(k1)] = value
-            sheet["C" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["D" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["E" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["F" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["G" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["H" + str(k1)] = round(ExcelData[cinematicTransversalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["kinematics"]["transversal"]
+        for k1, value in enumerate(names, start=(k1 + 1)):
+            sheet["B" + str(k1)] = value["fr"]
+            sheet["C" + str(k1)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["D" + str(k1)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["E" + str(k1)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["F" + str(k1)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["G" + str(k1)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["H" + str(k1)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         # Moment
@@ -824,20 +461,15 @@ def process_files():
         sheet["J" + str(i2)] = "Sagittal"
 
         count = 0
-        for i2, value in enumerate(momentSagittal, start=i2 + 1):
-            sheet["J" + str(i2)] = value
-            sheet["K" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["L" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["M" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["N" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["O" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["P" + str(i2)] = round(ExcelData[momentSagittalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["moment"]["sagittal"]
+        for i2, value in enumerate(names, start=i2 + 1):
+            sheet["J" + str(i2)] = value["fr"]
+            sheet["K" + str(i2)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["L" + str(i2)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["M" + str(i2)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["N" + str(i2)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["O" + str(i2)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["P" + str(i2)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         j2 = i2 + 1
@@ -845,40 +477,30 @@ def process_files():
 
         count = 0
         j2 = i2 + 1
-        for j2, value in enumerate(momentFrontal, start=(j2 + 1)):
-            sheet["J" + str(j2)] = value
-            sheet["K" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["L" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["M" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["N" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["O" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["P" + str(j2)] = round(ExcelData[momentFrontalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["moment"]["frontal"]
+        for j2, value in enumerate(names, start=(j2 + 1)):
+            sheet["J" + str(j2)] = value["fr"]
+            sheet["K" + str(j2)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["L" + str(j2)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["M" + str(j2)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["N" + str(j2)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["O" + str(j2)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["P" + str(j2)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         k2 = j2 + 1
         sheet["J" + str(k2)] = "Transversal"
 
         count = 0
-        for k2, value in enumerate(momentTransversal, start=(k2 + 1)):
-            sheet["J" + str(k2)] = value
-            sheet["K" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["L" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["M" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["N" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["O" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["P" + str(k2)] = round(ExcelData[momentTransversalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["moment"]["transversal"]
+        for k2, value in enumerate(names, start=(k2 + 1)):
+            sheet["J" + str(k2)] = value["fr"]
+            sheet["K" + str(k2)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["L" + str(k2)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["M" + str(k2)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["N" + str(k2)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["O" + str(k2)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["P" + str(k2)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         # Power
@@ -886,20 +508,15 @@ def process_files():
         sheet["R" + str(i3)] = "Sagittal"
 
         count = 0
-        for i3, value in enumerate(powerSagittal, start=i3 + 1):
-            sheet["R" + str(i3)] = value
-            sheet["S" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["T" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["U" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["V" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["W" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["X" + str(i3)] = round(ExcelData[powerSagittalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["power"]["sagittal"]
+        for i3, value in enumerate(names, start=i3 + 1):
+            sheet["R" + str(i3)] = value["fr"]
+            sheet["S" + str(i3)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["T" + str(i3)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["U" + str(i3)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["V" + str(i3)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["W" + str(i3)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["X" + str(i3)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         j3 = i3 + 1
@@ -907,40 +524,30 @@ def process_files():
 
         count = 0
         j3 = i3 + 1
-        for j3, value in enumerate(powerFrontal, start=(j3 + 1)):
-            sheet["R" + str(j3)] = value
-            sheet["S" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["T" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["U" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["V" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["W" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["X" + str(j3)] = round(ExcelData[powerFrontalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["power"]["frontal"]
+        for j3, value in enumerate(names, start=(j3 + 1)):
+            sheet["R" + str(j3)] = value["fr"]
+            sheet["S" + str(j3)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["T" + str(j3)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["U" + str(j3)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["V" + str(j3)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["W" + str(j3)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["X" + str(j3)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         k3 = j3 + 1
         sheet["R" + str(k3)] = "Transversal"
 
         count = 0
-        for k3, value in enumerate(powerTransversal, start=(k3 + 1)):
-            sheet["R" + str(k3)] = value
-            sheet["S" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Minimum Appui"], 2)
-            sheet["T" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Maximum Appui"], 2)
-            sheet["U" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Range Appui"], 2)
-            sheet["V" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Minimum Oscillation"], 2)
-            sheet["W" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Maximum Oscillation"], 2)
-            sheet["X" + str(k3)] = round(ExcelData[powerTransversalEnglish[count]]
-                                         ["Range Oscillation"], 2)
+        names = movement_names["power"]["transversal"]
+        for k3, value in enumerate(names, start=(k3 + 1)):
+            sheet["R" + str(k3)] = value["fr"]
+            sheet["S" + str(k3)] = round(ExcelData[names[count]["en"]]["Minimum Appui"], 2)
+            sheet["T" + str(k3)] = round(ExcelData[names[count]["en"]]["Maximum Appui"], 2)
+            sheet["U" + str(k3)] = round(ExcelData[names[count]["en"]]["Range Appui"], 2)
+            sheet["V" + str(k3)] = round(ExcelData[names[count]["en"]]["Minimum Oscillation"], 2)
+            sheet["W" + str(k3)] = round(ExcelData[names[count]["en"]]["Maximum Oscillation"], 2)
+            sheet["X" + str(k3)] = round(ExcelData[names[count]["en"]]["Range Oscillation"], 2)
             count += 1
 
         # Mise en forme
