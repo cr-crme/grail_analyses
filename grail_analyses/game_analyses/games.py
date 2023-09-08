@@ -4,130 +4,150 @@ Created on Tue Aug  1 14:26:25 2023
 
 @author: Florence
 """
+from abc import ABC, abstractmethod
 
 
-class AWalkAcrossTheBoard():
+class GameAbstract(ABC):
+    name: str  # Used for the name of the game
+    save_name: str  # Used for the name of the file
+
+    def __init__(self, name: str, save_name: str):
+        self.name = name
+        self.save_name = save_name
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"*{self.save_name}*"
+
+    @abstractmethod
+    def results(self, data, date: str):
+        """
+        This method should call first the "_common_results" and add their own result
+        to the output
+        """
+
+    def _common_results(self, date):
+        return "Jeu", self.name, "Date", date
+
+
+def get_games_list() -> tuple[GameAbstract, ...]:
+    return (
+        AWalkAcrossTheBoard(),
+        ItalianAlps(),
+        Microbes(),
+        PerturbationTrainer(),
+        RopeBridge(),
+    )
+
+
+class AWalkAcrossTheBoard(GameAbstract):
     def __init__(self):
-        self.nom_txt = '*WalkAcrossTheBoard*'  # NOM DANS FICHIER .TXT
-        self.nom = "A Walk Across The Board"  # NOM DANS FICHIER .XSLX
-    
-    def calculs(self, donnees, AAAA, MM, DD):
-        duration = donnees[-1, 0] * 60
-        distance = donnees[-1, 7]
-    
-        maxSpeed = max(donnees[:, 6])
-        meanSpeed = (donnees[:, 6]).mean()
-    
-        resultats = (("Jeu", self.nom), 
-                     ("Date_AAAA_MM_DD", f"{AAAA}_{MM}_{DD}"), 
-                     ("Duree_s", duration), 
-                     ("Distance_m", distance),
-                     ("VitesseMax_m/s", maxSpeed),
-                     ("VitesseMoy_m/s", meanSpeed),
-                     )
+        super(AWalkAcrossTheBoard, self).__init__(name="A Walk Across The Board", save_name="WalkAcrossTheBoard")
 
-        return resultats
+    def results(self, data, date: str):
+        duration = data[-1, 0] * 60
+        distance = data[-1, 7]
+        max_speed = max(data[:, 6])
+        mean_speed = (data[:, 6]).mean()
+
+        return (
+            *self._common_results(date),
+            ("Duree_s", duration),
+            ("Distance_m", distance),
+            ("VitesseMax_m/s", max_speed),
+            ("VitesseMoy_m/s", mean_speed)
+        )
 
 
-class ItalianAlps():
+class ItalianAlps(GameAbstract):
     def __init__(self):
-        self.nom_txt = '*ItalianAlps*'  # NOM DANS FICHIER .TXT
-        self.nom = "Italian alps"  # NOM DANS FICHIER .XSLX
-    
-    def calculs(self, donnees, AAAA, MM, DD):
-        duration = donnees[-1, 0] * 60
-        distance = donnees[-1, 2]
+        super(ItalianAlps, self).__init__(name="Italian alps", save_name="ItalianAlps")
 
-        maxSpeed = max(donnees[:, 1])
-        meanSpeed = (donnees[:, 1]).mean()
-        maxInclination = max(donnees[:, 5])
-        minInclination = min(donnees[:, 5])
-        meanInclination = (donnees[:, 5]).mean()
+    def results(self, data, date):
+        duration = data[-1, 0] * 60
+        distance = data[-1, 2]
 
-        resultats = (("Jeu", self.nom), 
-                     ("Date_AAAA_MM_DD", f"{AAAA}_{MM}_{DD}"), 
-                     ("Duree_s", duration), 
-                     ("Distance_m", distance),
-                     ("VitesseMax_m/s", maxSpeed),
-                     ("VitesseMoy_m/s", meanSpeed),
-                     ("InclinaisonMax_deg", maxInclination),
-                     ("InclinaisonMin_deg", minInclination),
-                     ("InclinaisonMoy_deg", meanInclination)
-                    )
+        max_speed = max(data[:, 1])
+        mean_speed = (data[:, 1]).mean()
+        max_inclination = max(data[:, 5])
+        min_inclination = min(data[:, 5])
+        mean_inclination = (data[:, 5]).mean()
 
-        return resultats
+        return (
+            *self._common_results(date),
+            ("Duree_s", duration),
+            ("Distance_m", distance),
+            ("VitesseMax_m/s", max_speed),
+            ("VitesseMoy_m/s", mean_speed),
+            ("InclinaisonMax_deg", max_inclination),
+            ("InclinaisonMin_deg", min_inclination),
+            ("InclinaisonMoy_deg", mean_inclination)
+        )
 
 
-class Microbes():
+class Microbes(GameAbstract):
     def __init__(self):
-        self.nom_txt = '*Microbes*'  # NOM DANS FICHIER .TXT
-        self.nom = "Microbes"  # NOM DANS FICHIER .XSLX
-    
-    def calculs(self, donnees, AAAA, MM, DD):
-        duration = donnees[-1, 0] * 60
-        distance = donnees[-1, 2]
-    
-        maxSpeed = max(donnees[:, 1])
-        meanSpeed = (donnees[:, 1]).mean()
-    
-        resultats = (("Jeu", self.nom), 
-                     ("Date_AAAA_MM_DD", f"{AAAA}_{MM}_{DD}"), 
-                     ("Duree_s", duration), 
-                     ("Distance_m", distance),
-                     ("VitesseMax_m/s", maxSpeed),
-                     ("VitesseMoy_m/s", meanSpeed),
-                     )
+        super(Microbes, self).__init__(name="Microbes", save_name="Microbes")
 
-        return resultats
+    def results(self, data, date):
+        duration = data[-1, 0] * 60
+        distance = data[-1, 2]
+    
+        max_speed = max(data[:, 1])
+        mean_speed = (data[:, 1]).mean()
+    
+        return (
+            *self._common_results(date),
+            ("Duree_s", duration),
+            ("Distance_m", distance),
+            ("VitesseMax_m/s", max_speed),
+            ("VitesseMoy_m/s", mean_speed),
+        )
     
 
-class PerturbationTrainer():
+class PerturbationTrainer(GameAbstract):
     def __init__(self):
-        self.nom_txt = '*PerturbationTrainer*'  # NOM DANS FICHIER .TXT
-        self.nom = "Perturbation trainer"  # NOM DANS FICHIER .XSLX
-    
-    def calculs(self, donnees, AAAA, MM, DD):
-        duration = donnees[-1, 0] * 60
-        distance = donnees[-1, 2]
-    
-        maxSpeed = max(donnees[:, 6])
-        meanSpeed = (donnees[:, 6]).mean()
-    
-        resultats = (("Jeu", self.nom), 
-                     ("Date_AAAA_MM_DD", f"{AAAA}_{MM}_{DD}"), 
-                     ("Duree_s", duration), 
-                     ("Distance_m", distance),
-                     ("VitesseMax_m/s", maxSpeed),
-                     ("VitesseMoy_m/s", meanSpeed),
-                     )
+        super(PerturbationTrainer, self).__init__(name="Perturbation trainer", save_name="PerturbationTrainer")
 
-        return resultats
+    def results(self, data, date):
+        duration = data[-1, 0] * 60
+        distance = data[-1, 2]
+    
+        max_speed = max(data[:, 6])
+        mean_speed = (data[:, 6]).mean()
+    
+        return (
+            *self._common_results(date),
+            ("Duree_s", duration),
+            ("Distance_m", distance),
+            ("VitesseMax_m/s", max_speed),
+            ("VitesseMoy_m/s", mean_speed),
+        )
 
 
-class RopeBridge():
+class RopeBridge(GameAbstract):
     def __init__(self):
-        self.nom_txt = '*RopeBridge*'  # NOM DANS FICHIER .TXT
-        self.nom = "Rope bridge"  # NOM DANS FICHIER .XSLX
-    
-    def calculs(self, donnees, AAAA, MM, DD):
-        duration = donnees[-1, 0] * 60
-        distance = donnees[-1, 2]
+        super(RopeBridge, self).__init__(name="Rope bridge", save_name="RopeBridge")
 
-        maxSpeed = max(donnees[:, 1])
-        meanSpeed = (donnees[:, 1]).mean()
-        maxInclination = max(donnees[:, 5])
-        minInclination = min(donnees[:, 5])
-        meanInclination = (donnees[:, 5]).mean()
+    def results(self, data, date):
+        duration = data[-1, 0] * 60
+        distance = data[-1, 2]
 
-        resultats = (("Jeu", self.nom), 
-                     ("Date_AAAA_MM_DD", f"{AAAA}_{MM}_{DD}"), 
-                     ("Duree_s", duration), 
-                     ("Distance_m", distance),
-                     ("VitesseMax_m/s", maxSpeed),
-                     ("VitesseMoy_m/s", meanSpeed),
-                     ("InclinaisonMax_deg", maxInclination),
-                     ("InclinaisonMin_deg", minInclination),
-                     ("InclinaisonMoy_deg", meanInclination)
-                    )
+        max_speed = max(data[:, 1])
+        mean_speed = (data[:, 1]).mean()
+        max_inclination = max(data[:, 5])
+        min_inclination = min(data[:, 5])
+        mean_inclination = (data[:, 5]).mean()
 
-        return resultats
+        return (
+            *self._common_results(date),
+            ("Duree_s", duration),
+            ("Distance_m", distance),
+            ("VitesseMax_m/s", max_speed),
+            ("VitesseMoy_m/s", mean_speed),
+            ("InclinaisonMax_deg", max_inclination),
+            ("InclinaisonMin_deg", min_inclination),
+            ("InclinaisonMoy_deg", mean_inclination)
+        )
