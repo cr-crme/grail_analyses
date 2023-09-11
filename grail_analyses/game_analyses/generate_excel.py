@@ -7,7 +7,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl.utils import get_column_letter
 
-from games import get_games_list
+from .games import get_games_list
 
 
 def generate_excel(patient_id, save_path):
@@ -134,11 +134,8 @@ def _optimize_cell_width(ws):
     for col in ws.columns:
         max_length = 0
         for cell in col:
-            try:
-                if len(str(cell.value)) > max_length:
-                    max_length = len(cell.value)
-            except ...:
-                pass
+            if cell.value is not None and len(str(cell.value)) > max_length:
+                max_length = len(cell.value)
         adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[get_column_letter(col[0].column)].width = adjusted_width
 
