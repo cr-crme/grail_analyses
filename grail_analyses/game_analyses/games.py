@@ -57,7 +57,7 @@ class AWalkAcrossTheBoard(GameAbstract):
             ("Duree_s", duration),
             ("Distance_m", distance),
             ("VitesseMax_m/s", max_speed),
-            ("VitesseMoy_m/s", mean_speed)
+            ("VitesseMoy_m/s", mean_speed),
         )
 
 
@@ -83,7 +83,7 @@ class ItalianAlps(GameAbstract):
             ("VitesseMoy_m/s", mean_speed),
             ("InclinaisonMax_deg", max_inclination),
             ("InclinaisonMin_deg", min_inclination),
-            ("InclinaisonMoy_deg", mean_inclination)
+            ("InclinaisonMoy_deg", mean_inclination),
         )
 
 
@@ -94,10 +94,10 @@ class Microbes(GameAbstract):
     def results(self, data, date):
         duration = data[-1, 0] * 60
         distance = data[-1, 2]
-    
+
         max_speed = max(data[:, 1])
         mean_speed = (data[:, 1]).mean()
-    
+
         return (
             *self._common_results(date),
             ("Duree_s", duration),
@@ -105,7 +105,7 @@ class Microbes(GameAbstract):
             ("VitesseMax_m/s", max_speed),
             ("VitesseMoy_m/s", mean_speed),
         )
-    
+
 
 class PerturbationTrainer(GameAbstract):
     def __init__(self):
@@ -114,10 +114,10 @@ class PerturbationTrainer(GameAbstract):
     def results(self, data, date):
         duration = data[-1, 0] * 60
         distance = data[-1, 2]
-    
+
         max_speed = max(data[:, 6])
         mean_speed = (data[:, 6]).mean()
-    
+
         return (
             *self._common_results(date),
             ("Duree_s", duration),
@@ -149,5 +149,5 @@ class RopeBridge(GameAbstract):
             ("VitesseMoy_m/s", mean_speed),
             ("InclinaisonMax_deg", max_inclination),
             ("InclinaisonMin_deg", min_inclination),
-            ("InclinaisonMoy_deg", mean_inclination)
+            ("InclinaisonMoy_deg", mean_inclination),
         )

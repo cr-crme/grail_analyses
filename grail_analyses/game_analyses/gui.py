@@ -40,15 +40,14 @@ class GameAnalysis(QMainWindow):
             QMessageBox.warning(self, "Erreur", "Entrer un identifiant valide.")
             self.id_edit.clear()
         except IOError:
-            QMessageBox.warning(self, "Erreur",
-                                "Le fichier d'exportation n'est pas accessible. S'il est ouvert, veuillez le fermer.")
+            QMessageBox.warning(
+                self, "Erreur", "Le fichier d'exportation n'est pas accessible. S'il est ouvert, veuillez le fermer."
+            )
             self.id_edit.clear()
             return
         except (Exception,):
-            QMessageBox.warning(self, "Erreur",
-                                "Erreur inconnue dans le code")
+            QMessageBox.warning(self, "Erreur", "Erreur inconnue dans le code")
             self.id_edit.clear()
 
-        QMessageBox.warning(self, "Succès",
-                            "L'exportation a réussi")
+        QMessageBox.warning(self, "Succès", "L'exportation a réussi")
         self.close()

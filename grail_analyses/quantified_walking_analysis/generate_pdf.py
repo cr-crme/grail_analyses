@@ -11,20 +11,26 @@ from .config import movement_names
 
 
 def generate_pdf(data, save_path):
-
     doc = SimpleDocTemplate(
-        save_path, pagesize=letter, leftMargin=0.5 * inch, rightMargin=0.5 * inch,
-        topMargin=0.4 * inch, bottomMargin=0.5 * inch)
+        save_path,
+        pagesize=letter,
+        leftMargin=0.5 * inch,
+        rightMargin=0.5 * inch,
+        topMargin=0.4 * inch,
+        bottomMargin=0.5 * inch,
+    )
     elements = []
 
     identification = [["Numéro de dossier"], ["Nom", ""], ["Prénom", ""], ["Date", ""]]
     identification_table = Table(identification, colWidths=[106, 400])
     identification_table.setStyle(
-        TableStyle([
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ])
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
+        )
     )
     elements.append(identification_table)
     elements.append(Spacer(1, 20))  # Add an empty spacer for separation
@@ -42,24 +48,32 @@ def _create_measure_table(elements, data, title: str, level: str):
         raise ValueError("Wrong level")
 
     title_table = Table([[title]], colWidths=[475])
-    title_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-    ]))
+    title_table.setStyle(
+        TableStyle(
+            [
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ]
+        )
+    )
     elements.append(title_table)
 
     phases = [["", "Phase d'Appui", "Phase d'Oscillations"]]
     phases_table = Table(phases, colWidths=[140, 183, 183])
-    phases_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('LINEBEFORE', (0, 0), (0, -1), 2, colors.black),
-        ('LINEAFTER', (-1, 0), (-1, -1), 2, colors.black),
-        ('LINEAFTER', (0, 0), (-1, -1), 1, colors.black),
-        ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-    ]))
+    phases_table.setStyle(
+        TableStyle(
+            [
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("LINEBEFORE", (0, 0), (0, -1), 2, colors.black),
+                ("LINEAFTER", (-1, 0), (-1, -1), 2, colors.black),
+                ("LINEAFTER", (0, 0), (-1, -1), 1, colors.black),
+                ("LINEABOVE", (0, 0), (-1, 0), 2, colors.black),
+            ]
+        )
+    )
     elements.append(phases_table)
 
     measures = [["", "Min (deg)", "Max (deg)", "Range (deg)", "Min (deg)", "Max (deg)", "Range (deg)"]]
@@ -68,21 +82,25 @@ def _create_measure_table(elements, data, title: str, level: str):
     measure_table = Table(measures, colWidths=[140, 61, 61, 61, 61, 61, 61])
     n_sagittal = len(movement_names[level]["sagittal"]) - 1
     n_frontal = len(movement_names[level]["frontal"]) - 1
-    measure_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Bold'),
-        ('FONTNAME', (0, n_sagittal + 3), (0, n_sagittal + 3), 'Helvetica-Bold'),
-        ('FONTNAME', (0, n_sagittal + n_frontal + 5), (0, n_sagittal + n_frontal + 5), 'Helvetica-Bold'),
-        ('LINEBEFORE', (0, 0), (0, -1), 2, colors.black),
-        ('LINEAFTER', (-1, 0), (-1, -1), 2, colors.black),
-        ('LINEAFTER', (-4, 0), (-4, -1), 1, colors.black),
-        ('LINEAFTER', (0, 0), (0, -1), 1, colors.black),
-        ('LINEBELOW', (0, n_sagittal + 2), (-1, n_sagittal + 2), 1, colors.black),
-        ('LINEBELOW', (0, n_sagittal + n_frontal + 4), (-1, n_sagittal + n_frontal + 4), 1, colors.black),
-        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
-        ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
-    ]))
+    measure_table.setStyle(
+        TableStyle(
+            [
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("FONTNAME", (0, 1), (0, 1), "Helvetica-Bold"),
+                ("FONTNAME", (0, n_sagittal + 3), (0, n_sagittal + 3), "Helvetica-Bold"),
+                ("FONTNAME", (0, n_sagittal + n_frontal + 5), (0, n_sagittal + n_frontal + 5), "Helvetica-Bold"),
+                ("LINEBEFORE", (0, 0), (0, -1), 2, colors.black),
+                ("LINEAFTER", (-1, 0), (-1, -1), 2, colors.black),
+                ("LINEAFTER", (-4, 0), (-4, -1), 1, colors.black),
+                ("LINEAFTER", (0, 0), (0, -1), 1, colors.black),
+                ("LINEBELOW", (0, n_sagittal + 2), (-1, n_sagittal + 2), 1, colors.black),
+                ("LINEBELOW", (0, n_sagittal + n_frontal + 4), (-1, n_sagittal + n_frontal + 4), 1, colors.black),
+                ("LINEBELOW", (0, 0), (-1, 0), 1, colors.black),
+                ("LINEBELOW", (0, -1), (-1, -1), 2, colors.black),
+            ]
+        )
+    )
     elements.append(measure_table)
 
     elements.append(PageBreak())

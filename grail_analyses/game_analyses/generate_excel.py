@@ -74,7 +74,7 @@ def generate_excel(patient_id, save_path):
 
 
 def _get_date(file_path: str):
-    date = os.path.basename(file_path).split('_')
+    date = os.path.basename(file_path).split("_")
     aaaa = date[2][0:4]
     mm = date[2][4:6]
     dd = date[2][6:8]
@@ -84,7 +84,7 @@ def _get_date(file_path: str):
 def _initialize_file(patient_id: str, file_path):
     wb = Workbook()
     ws = wb.create_sheet("Presentation")
-    del wb['Sheet']
+    del wb["Sheet"]
 
     ws["A1"] = "ID"
     ws["B1"] = patient_id
@@ -93,11 +93,11 @@ def _initialize_file(patient_id: str, file_path):
     ws["A4"] = "Numéro de dossier"
     ws["A5"] = "Date de création"
     ws["A6"] = "Dernière date de modification"
-    ws["B5"] = datetime.datetime.today().strftime('%Y-%m-%d')
+    ws["B5"] = datetime.datetime.today().strftime("%Y-%m-%d")
 
     for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=1):
         for cell in row:
-            _bold(ws, cell, 'v2')
+            _bold(ws, cell, "v2")
 
     _optimize_cell_width(ws)
     wb.save(file_path)
@@ -110,12 +110,12 @@ def _set_border(ws, cells, side, thickness):
         right_border = existing_border.right
         top_border = existing_border.top
         bottom_border = existing_border.bottom
-        new_border = Border(top=top_border if side != 'bottom' else Side(border_style=thickness, color="000000"),
-                            bottom=bottom_border if side != 'top' else Side(
-                                border_style=thickness, color="000000"),
-                            left=left_border if side != 'left' else Side(
-                                border_style=thickness, color="000000"),
-                            right=right_border if side != 'right' else Side(border_style=thickness, color="000000"))
+        new_border = Border(
+            top=top_border if side != "bottom" else Side(border_style=thickness, color="000000"),
+            bottom=bottom_border if side != "top" else Side(border_style=thickness, color="000000"),
+            left=left_border if side != "left" else Side(border_style=thickness, color="000000"),
+            right=right_border if side != "right" else Side(border_style=thickness, color="000000"),
+        )
         ws[cell].border = new_border
 
 
@@ -140,15 +140,15 @@ def _optimize_cell_width(ws):
         ws.column_dimensions[get_column_letter(col[0].column)].width = adjusted_width
 
 
-def _bold(ws, cell, version='v1'):
-    if version == 'v1':
+def _bold(ws, cell, version="v1"):
+    if version == "v1":
         ws[cell].font = Font(bold=True)
     else:
         cell.font = Font(bold=True)
 
 
-def _not_bold(ws, cell, version='v1'):
-    if version == 'v1':
+def _not_bold(ws, cell, version="v1"):
+    if version == "v1":
         ws[cell].font = Font(bold=False)
     else:
         cell.font = Font(bold=False)

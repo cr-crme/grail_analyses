@@ -5,11 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="Grail analyses",
-    packages=[
-        "grail_analyses",
-        "grail_analyses/quantified_walking_analysis",
-        "grail_analyses/game_analyses"
-    ],
+    packages=["grail_analyses", "grail_analyses/quantified_walking_analysis", "grail_analyses/game_analyses"],
     license="LICENSE",
     keywords=["Grail Analyses", "Walking", "Quantified Walking Analysis"],
     classifiers=[

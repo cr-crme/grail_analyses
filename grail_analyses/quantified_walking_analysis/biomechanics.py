@@ -9,12 +9,12 @@ def ranges_of_motion(file_data, variable, side, length):
     data_side = data[data.iloc[:, 0] == side]
     average = data_side.iloc[:, 3:].mean()
 
-    swing_phase = average[length[0 if side == "left" else 1]:]
+    swing_phase = average[length[0 if side == "left" else 1] :]
     maximum_swing = max(swing_phase)
     minimum_swing = min(swing_phase)
     range_swing = maximum_swing - minimum_swing
 
-    stance_phase = average[:length[0 if side == "left" else 1]]
+    stance_phase = average[: length[0 if side == "left" else 1]]
     maximum_stance = max(stance_phase)
     minimum_stance = min(stance_phase)
     range_stance = maximum_stance - minimum_stance

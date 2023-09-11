@@ -1,4 +1,14 @@
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QFileDialog, QTextEdit, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QMessageBox
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QPushButton,
+    QFileDialog,
+    QTextEdit,
+    QVBoxLayout,
+    QHBoxLayout,
+    QWidget,
+    QLabel,
+    QMessageBox,
+)
 
 from .file_io import process_files
 
@@ -57,14 +67,13 @@ class QwaAnalysis(QMainWindow):
         try:
             process_files(files=self.files)
         except IOError:
-            QMessageBox.warning(self, "Erreur",
-                                "Le fichier d'exportation n'est pas accessible. S'il est ouvert, veuillez le fermer.")
+            QMessageBox.warning(
+                self, "Erreur", "Le fichier d'exportation n'est pas accessible. S'il est ouvert, veuillez le fermer."
+            )
             return
         except (Exception,):
-            QMessageBox.warning(self, "Erreur",
-                                "Erreur inconnue dans le code")
+            QMessageBox.warning(self, "Erreur", "Erreur inconnue dans le code")
             self.id_edit.clear()
 
-        QMessageBox.warning(self, "Succès",
-                            "L'exportation a réussi")
+        QMessageBox.warning(self, "Succès", "L'exportation a réussi")
         self.close()

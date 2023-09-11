@@ -75,52 +75,39 @@ def _add_borders(sheet, last_row: dict):
     def to_col(col_name, i):
         return chr(ord(col_name) + i)
 
-    border_thick = Side(border_style="thick", color="000000")
-    border_med = Side(border_style="medium", color="000000")
+    thick = Side(border_style="thick", color="000000")
+    med = Side(border_style="medium", color="000000")
     for col, level in zip(("B", "J", "R"), ("kinematics", "moment", "power")):
-        _draw_square_borders(
-            sheet,
-            border_thick,
-            top_left_corner=f"{to_col(col, 0)}5",
-            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['transversal']}"
+        row = last_row[level]
+        _square_borders(
+            sheet, thick, top_left=f"{to_col(col, 0)}5", bottom_right=f"{to_col(col, 6)}{row['transversal']}"
         )
-        _draw_square_borders(
+        _square_borders(sheet, thick, top_left=f"{to_col(col, 1)}5", bottom_right=f"{to_col(col, 6)}7")
+        _square_borders(
             sheet,
-            border_thick,
-            top_left_corner=f"{to_col(col, 1)}5",
-            bottom_right_corner=f"{to_col(col, 6)}7"
+            med,
+            top_left=f"{to_col(col, 0)}{row['sagittal'] + 1}",
+            bottom_right=f"{to_col(col, 6)}{row['frontal']}",
         )
-        _draw_square_borders(
-            sheet,
-            border_med,
-            top_left_corner=f"{to_col(col, 0)}{last_row[level]['sagittal'] + 1}",
-            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['frontal']}"
+        _square_borders(
+            sheet, thick, top_left=f"{to_col(col, 1)}5", bottom_right=f"{to_col(col, 6)}{row['transversal']}"
         )
-        _draw_square_borders(
-            sheet,
-            border_thick,
-            top_left_corner=f"{to_col(col, 1)}5",
-            bottom_right_corner=f"{to_col(col, 6)}{last_row[level]['transversal']}"
-        )
-        _draw_square_borders(
-            sheet,
-            border_thick,
-            top_left_corner=f"{to_col(col, 0)}8",
-            bottom_right_corner=f"{to_col(col, 3)}{last_row[level]['transversal']}"
+        _square_borders(
+            sheet, thick, top_left=f"{to_col(col, 0)}8", bottom_right=f"{to_col(col, 3)}{row['transversal']}"
         )
 
 
-def _draw_square_borders(sheet, format, top_left_corner: str, bottom_right_corner: str):
-    top_right_corner = f"{bottom_right_corner[0]}{top_left_corner[1:]}"
-    bottom_left_corner = f"{top_left_corner[0]}{bottom_right_corner[1:]}"
+def _square_borders(sheet, format, top_left: str, bottom_right: str):
+    top_right = f"{bottom_right[0]}{top_left[1:]}"
+    bottom_left = f"{top_left[0]}{bottom_right[1:]}"
 
-    for s in sheet[f"{top_left_corner}:{top_right_corner}"][0]:
+    for s in sheet[f"{top_left}:{top_right}"][0]:
         s.border = Border(top=format, left=s.border.left, right=s.border.right, bottom=s.border.bottom)
-    for s in sheet[f"{bottom_left_corner}:{bottom_right_corner}"][0]:
+    for s in sheet[f"{bottom_left}:{bottom_right}"][0]:
         s.border = Border(top=s.border.top, left=s.border.left, right=s.border.right, bottom=format)
-    for s in sheet[f"{top_left_corner}:{bottom_left_corner}"]:
+    for s in sheet[f"{top_left}:{bottom_left}"]:
         s[0].border = Border(top=s[0].border.top, left=format, right=s[0].border.right, bottom=s[0].border.bottom)
-    for s in sheet[f"{top_right_corner}:{bottom_right_corner}"]:
+    for s in sheet[f"{top_right}:{bottom_right}"]:
         s[0].border = Border(top=s[0].border.top, left=s[0].border.left, right=format, bottom=s[0].border.bottom)
 
 
@@ -160,7 +147,7 @@ def _prepare_main_header(sheet):
 
     # Formatting
     format = Side(border_style="thick", color="000000")
-    _draw_square_borders(sheet, format=format, top_left_corner="B2", bottom_right_corner="H4")
+    _square_borders(sheet, format=format, top_left="B2", bottom_right="H4")
 
     sheet.merge_cells("C2:H2")
     sheet.merge_cells("C3:H3")
