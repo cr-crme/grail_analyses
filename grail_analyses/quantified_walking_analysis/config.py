@@ -1,4 +1,4 @@
-grail_save_folder = "D:/CAREN Ressources/Data"
+grail_save_folder = "D:/CAREN Resources/Data"
 movement_names = {
     "kinematics": {
         "sagittal": [
