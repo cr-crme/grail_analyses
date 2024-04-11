@@ -24,7 +24,7 @@ def load_data(file: str) -> dict:
     return data
 
 
-def process_files(files: list[str, ...]):
+def process_files(files: list[str]):
     for file in files:
         save_folder = os.path.dirname(file)
         save_file_no_extension = os.path.splitext(os.path.basename(file))[0]

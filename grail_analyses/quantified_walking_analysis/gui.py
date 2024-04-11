@@ -10,12 +10,13 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
+from .config import grail_save_folder
 from .file_io import process_files
 
 
 class QwaAnalysis(QMainWindow):
     def __init__(self, *args, **kwargs):
-        self.files: list[str, ...] = []
+        self.files: list[str] = []
 
         # Declaring the meta aspect of the window
         super(QwaAnalysis, self).__init__(*args, **kwargs)
@@ -52,7 +53,7 @@ class QwaAnalysis(QMainWindow):
         self.main_layout.addLayout(button_layout)
 
     def _select_files(self):
-        files, _ = QFileDialog.getOpenFileNames(None, "QFileDialog.getOpenFileNames()", "", "CSV files (*.csv)")
+        files, _ = QFileDialog.getOpenFileNames(self, None, directory=grail_save_folder, filter="CSV files (*.csv)")
         if not files:
             return
 

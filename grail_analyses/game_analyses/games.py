@@ -29,7 +29,7 @@ class GameAbstract(ABC):
         """
 
     def _common_results(self, date):
-        return "Jeu", self.name, "Date", date
+        return ("Jeu", self.name), ("Date", date)
 
 
 def get_games_list() -> tuple[GameAbstract, ...]:

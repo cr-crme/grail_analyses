@@ -36,6 +36,7 @@ class GameAnalysis(QMainWindow):
     def _export_results_callback(self):
         try:
             export_results(self.id_edit.text())
+            QMessageBox.warning(self, "Succès", "L'exportation a réussi")
         except RuntimeError:
             QMessageBox.warning(self, "Erreur", "Entrer un identifiant valide.")
             self.id_edit.clear()
@@ -49,5 +50,4 @@ class GameAnalysis(QMainWindow):
             QMessageBox.warning(self, "Erreur", "Erreur inconnue dans le code")
             self.id_edit.clear()
 
-        QMessageBox.warning(self, "Succès", "L'exportation a réussi")
         self.close()

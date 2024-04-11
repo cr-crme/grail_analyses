@@ -10,16 +10,20 @@ from openpyxl.utils import get_column_letter
 from .games import get_games_list
 
 
-def generate_excel(patient_id, save_path):
+def generate_excel(patient_id, root_path):
+    data_folder = f"{root_path}/Fichiers txt"
+    save_path = f"{root_path}/Analyse/{patient_id}_ResumeIntervention.xlsx"
+
     # Add an introduction sheet if there were none
     if not os.path.exists(save_path):
+        if not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         _initialize_file(patient_id, save_path)
     wb = load_workbook(save_path)
 
-    save_folder = os.path.dirname(save_path)
     # Create each game sheet
     for game in get_games_list():
-        files = glob.glob(f"{save_folder}/{game.save_name}", recursive=True)
+        files = glob.glob(f"{data_folder}/*{game.save_name}*", recursive=True)
         if not files:
             continue
 
@@ -51,13 +55,13 @@ def generate_excel(patient_id, save_path):
         for col in range(len(results)):
             border1.append(f"{chr(65 + col)}1")
             border4.append(f"{chr(65 + col)}1")
-            border4.append(f"{chr(65 + col)}{i}")
+            border4.append(f"{chr(65 + col)}{i + 1}")
 
-        for row in range(1, i):
+        for row in range(1, i + 1):
             border2.append(f"A{row}")
             border5.append(f"{chr(64 + len(results))}{row}")
             for col in range(len(results)):
-                if 1 < row < i:
+                if 1 < row < i + 1:
                     border3.append(f"{chr(65 + col)}{row}")
 
         _set_border(ws, border1, "top", "thick")
@@ -135,7 +139,7 @@ def _optimize_cell_width(ws):
         max_length = 0
         for cell in col:
             if cell.value is not None and len(str(cell.value)) > max_length:
-                max_length = len(cell.value)
+                max_length = len(str(cell.value))
         adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[get_column_letter(col[0].column)].width = adjusted_width
 
